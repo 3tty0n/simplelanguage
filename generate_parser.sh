@@ -39,6 +39,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+#
 
-curl -O https://www.antlr.org/download/antlr-4.7.1-complete.jar
+ANTLR=antlr-4.7.1-complete.jar
+
+if [ ! -f $ANTLR ]; then
+    curl -O https://www.antlr.org/download/
+fi
 java -cp antlr-4.7.1-complete.jar org.antlr.v4.Tool -package com.oracle.truffle.sl.parser -no-listener language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.g4
