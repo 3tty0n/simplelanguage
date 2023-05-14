@@ -166,6 +166,12 @@ statement [boolean inLoop] returns [SLStatementNode result]
     if_statement[inLoop]                        { $result = $if_statement.result; }
 |
     return_statement                            { $result = $return_statement.result; }
+/*|
+    array_create_expression                     { $result = $array_create_expression.result; }
+|
+    array_get_expression                        { $result = $array_get_expression.result; }
+|
+    array_set_expression                        { $result = $array_set_expression.result; } */
 |
     expression ';'                              { $result = $expression.result; }
 |
@@ -207,6 +213,42 @@ r='return'                                      { SLExpressionNode value = null;
 )?                                              { $result = factory.createReturn($r, value); }
 ';'
 ;
+
+/*
+array_create_expression returns [SLExpressionNode result]
+:
+a='arr'
+'('
+    exp=expression
+')'                                             { $result = factory.createArrayCreate($a, $exp.result); }
+';'
+;
+
+
+array_set_expression returns [SLExpressionNode result]
+:
+(
+    IDENTIFIER
+    '['
+    expr1=expression
+    ']'
+    '<-'
+    expr2=expression
+)
+';'                                             { $result = factory.createArraySet($IDENTIFIER, $expr1.result, $expr2.result); }
+;
+
+
+array_get_expression returns [SLExpressionNode result]
+:
+(
+    IDENTIFIER
+    '['
+    expr=expression
+    ']'
+)                                               { $result = factory.createArrayGet($IDENTIFIER, $expr.result); }
+;
+*/
 
 
 expression returns [SLExpressionNode result]
@@ -345,4 +387,3 @@ fragment STRING_CHAR : ~('"' | '\\' | '\r' | '\n');
 IDENTIFIER : LETTER (LETTER | DIGIT)*;
 STRING_LITERAL : '"' STRING_CHAR* '"';
 NUMERIC_LITERAL : '0' | NON_ZERO_DIGIT DIGIT*;
-
